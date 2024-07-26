@@ -57,7 +57,7 @@ NOTE: Pressing <ESC> will place you in Normal mode or will cancel
 
          c   [number]   motion  
 
- Lesson 4 SUMMARY  
+ Lesson 4 SUMMARY  a
 
 
   1. CTRL-G  displays your location in the file and the file status.  
