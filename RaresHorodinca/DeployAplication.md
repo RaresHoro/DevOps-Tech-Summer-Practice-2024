@@ -4,7 +4,7 @@
 
 ```dockerfile
 # Use JDK as the base image
-FROM openjdk:11-jdk AS build
+FROM openjdk:17-jdk AS build
 
 # Set environment variables for MySQL
 ENV SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/mydatabase
