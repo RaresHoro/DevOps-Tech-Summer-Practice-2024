@@ -108,3 +108,7 @@ Similar structure:
 2. Avoid conflicts between teams.
 3. Share services between different environments.
 4. Set access and resource limits at the namespace level.
+
+gcloud container clusters get-credentials my-gke-cluster --zone europe-west1-b --project tennis-registration
+gke_tennis-registration_europe-west1-b_my-gke-cluster
+
