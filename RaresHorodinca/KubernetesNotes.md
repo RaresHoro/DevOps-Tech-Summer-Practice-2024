@@ -112,3 +112,20 @@ Similar structure:
 gcloud container clusters get-credentials my-gke-cluster --zone europe-west1-b --project tennis-registration
 gke_tennis-registration_europe-west1-b_my-gke-cluster
 
+𝐤𝐮𝐛𝐞-𝐚𝐩𝐢-𝐬𝐞𝐫𝐯𝐞𝐫: Handles API calls efficiently, scaling as needed. It's the gateway for interacting with Kubernetes, and processing commands and requests.  
+
+𝐞𝐭𝐜𝐝: Stores important cluster data securely. Only the API server can directly access etcd, ensuring data integrity and consistency.  
+
+𝐤𝐮𝐛𝐞-𝐬𝐜𝐡𝐞𝐝𝐮𝐥𝐞𝐫: Finds the best nodes for tasks based on resource availability and requirements. It's like a matchmaker, pairing workloads with suitable nodes.  
+
+𝐜𝐨𝐧𝐭𝐫𝐨𝐥𝐥𝐞𝐫-𝐦𝐚𝐧𝐚𝐠𝐞𝐫: Keeps things running smoothly by monitoring for changes and taking necessary actions. It handles tasks like cleaning up unused resources and managing namespaces.  
+
+𝐂𝐥𝐨𝐮𝐝 𝐂𝐨𝐧𝐭𝐫𝐨𝐥𝐥𝐞𝐫 𝐌𝐚𝐧𝐚𝐠𝐞𝐫: Connects your cluster to the cloud provider's features. It handles nodes, routes, and services, letting cloud features integrate smoothly with Kubernetes.  
+
+𝐤𝐮𝐛𝐞𝐥𝐞𝐭: Ensures containers are healthy and manages node resources. It's like a caretaker, making sure containers are running well on their assigned nodes.  
+
+𝐤𝐮𝐛𝐞-𝐩𝐫𝐨𝐱𝐲: Manages network configuration on nodes, facilitating communication between services and pods. It's like a traffic cop, directing network traffic within the cluster.  
+
+𝐂𝐨𝐧𝐭𝐚𝐢𝐧𝐞𝐫 𝐑𝐮𝐧𝐭𝐢𝐦𝐞: Manages containers and images, enabling them to work seamlessly on Kubernetes. It's the bridge between Kubernetes and container runtimes like Docker.  
+
+𝐏𝐨𝐝𝐬: Bundles of processes that run until they finish their tasks. They're like temporary work crews, executing specific jobs within the cluster.  
