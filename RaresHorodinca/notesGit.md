@@ -1,147 +1,152 @@
- Lesson 1 Install Git 
+# Git Lessons
 
- apt install -y git
+## Lesson 1: Install Git
+```bash
+apt install -y git
+```
 
- Lesson 2 Configure Git  
+## Lesson 2: Configure Git
 
- --system - table relevant for the whole machine  
+- `--system` - table relevant for the whole machine  
+- `--global` - for the current user  
+- `--local` (default) - for the current repository  
 
---global - for the current user  
-
---local (default) for the current repository  
-
-git config --list -a ll settings are printed.  
-
-git config --list --global - only --global table is listed  
-
-git config user.name - selected record is printed.  
-
-git config --list lists the configurations
+```bash
+git config --list -a  # All settings are printed.
+git config --list --global  # Only --global table is listed.
+git config user.name  # Selected record is printed.
+git config --list  # Lists the configurations.
+```
 
 We have a file to commit in the repo. We can do it now, as we configured our user.
 
+```bash
 git add .
+git commit -m "my first commit"  # Commit new file.
+```
 
-git commit newfile -m "my first commit"
+## Lesson 4: Remove File from Commit
 
-Lesson 4 : Remove file from commit  
+Anyway, we have 4 files in stage. Let's remove `testfile-01`.
 
-Anyway, we have 4 files in stage. Let's remove testfile-01  
+```bash
+git rm --cached testfile-01
+git rm --cached -r .  # Remove everything from here, recursively.
+```
 
-git rm --cached testfile-01  
+We successfully reset the file to the state from the previous commit using `git checkout`.
 
-git rm --cached -r .  
+### Another Way of Going Back
 
-please notice, we used . to say everything from here and -r which means recursive.  
+Reset the current HEAD to the selected state.
 
-We succesfully reset the file to the state from previous commit, using git checkout
+```bash
+git reset  # Moves the current pointer in HEAD and branch refs to a specific state.
+```
 
-Another way of going back  
-Reset the current HEAD to the selected state  
+- **Soft Reset**  
+  With `--soft` parameter, we come back to the previous HEAD of the repository, but all changes that we committed remain unchanged.
 
-git reset moves the current pointer in HEAD and branch refs to specific state. 
+- **Hard Reset**  
+  Moves back and removes the changes that were done.
 
-Soft reset  
+## Lesson 6: Revert Changes
 
-With --soft parameter we came back to the previous HEAD of the repository, but all changes which we commited are unchanged.  
+```bash
+git revert --no-edit HEAD  # Use default message.
+```
 
-soft - moves back  
-hard - moves back and renoves the changes done which were done
+Our current status is like this: we are between two commits, for `file-01` and `file-02`.
 
-Lesson 6 Revert Changes 
+- `HEAD` is where we are.
+- `HEAD~3` moves back from HEAD by 3 commits; this becomes our new HEAD.
 
-git revert --no-edit HEAD  
---no-edit we informed git that we don't want to pass any message and we ask to use default  
+## Lesson 7: Check the Differences
 
-Our current status is like this: we are between two commits, for file-01 and file-02.  
+```bash
+git diff  # Allows checking the differences between HEAD and current working directory.
+```
 
-HEAD is where we are, HEAD~3 move back form head by 3 commits , this becomes our new HEAD.  
+We can check diff for one file.
 
-Lesson 7 :Check the Differenences
-
-git diff, allows to check the differences between HEAD and current working directory  
-Another words, what was changed during our recent work.  
-
-we can check diff for one file.  
-
+```bash
 clear && git diff HEAD~1 testfile-01
+```
 
+To see the difference between staged work and HEAD, you need to say this explicitly.
 
-In order to see the difference between staged work and HEAD, you need to say this explicitly.
-
+```bash
 git diff --staged
+```
 
-Lesson 8 : Detailed info about previuos commits  
+## Lesson 8: Detailed Info About Previous Commits
 
---oneline shows only most important info about commits  
+- `--oneline` shows only the most important info about commits.
+- `git log -p` shows us info about all commits.
+- `git shortlog` provides info about the author.
+- `git log --stat`
+- `git log --graph` visualizes work done on branches.
+- `git log --oneline --graph` looks better this way.
 
-git log -p : shows us ingo about all commits  
+## Lesson 9: Conflicts
 
-git shortlog info about author  
+1. `change1` commit
+2. `change2` commit
+3. Revert to `change1`  
+   That means we have `change2` unattended!
 
-git log --stat  
+```bash
+sed -i '2,5d' testfile-02  # Remove lines 2 to 5.
+```
 
-git log --graph visualise work done on branches.  
+After removing the lines, we add the file back.
 
-git log --oneline --graph looks better this way  
+There are tools that can help you resolve conflicts. Examples are:
 
+- `git mergetool` (part of the git package; you need to specify the proper tool to be invoked)
+- Plugins for your favorite editor
+- Kdiff3
+- Meld
 
-Lesson 9 Conflicts  
-
-change1 commit  
-change2 commit  
-revert to change1  
-That means, we have change2 unattended!  
-
-sed -i '2,5d' testfile-02 remove lines t2 to 5  
-
-After emove the lines, we add the file back 
-
-There are tools which can help you to resolve conflicts. Examples are
-
-git-mergetool (part of the git package, you need to specify proper tool which will be invoked)  
-Plugins to your beloved editor  
-Kdiff3  
-Meld  
-
-Lesson 10 Powerful stash 
+## Lesson 10: Powerful Stash
 
 TBD
 
-Lesson 11 How to ignore some content  
+## Lesson 11: How to Ignore Some Content
 
-Add the files/dir we want to ignore to .gitignore
+Add the files/directories we want to ignore to `.gitignore`.
 
-!firstdirectory/neveringit : ! - we want to add it in git(we force it)  
+```plaintext
+!firstdirectory/neveringit  # We want to add it in git (we force it).
+```
 
-Lesson 12 : Git Tags 
+## Lesson 12: Git Tags
 
-git tag -a v1.0 -m "version 1.0. initial state" create tag  
+```bash
+git tag -a v1.0 -m "version 1.0. initial state"  # Create tag.
+```
 
-git adog | grep 'testfile-06' | awk '{print $2}' | head -n1  
+```bash
+git adog | grep 'testfile-06' | awk '{print $2}' | head -n1  # Example command.
+```
 
-awk '{print $2}' - with awk we are 'cutting' the output and print only the third (counted from 0) element, where separator (default one) is a space.  
+- `awk '{print $2}'` - with awk we are 'cutting' the output and printing only the second element, where the separator (default one) is a space.
+- `git describe` tells us what tag we are at.
 
-git describe tells us what tg are we at  
-
+```bash
 git checkout master
+git tag -d v1.0  # Delete tag.
+```
 
-git tag -d v1.0  delete tag  
+## Lesson 13: Merge Branches
 
-Lesson 13 : merge branches 
+```bash
+git checkout -b newbranch  # Create new branch.
+git checkout  # Moves us between branches.
+```
 
-git checkout -b newbranch  vreate new branch  
-git checkout moves us between branches  
+## Lesson 14: Cheat the History
 
+### Rebase
 
-Lesson 14 Cheat the history  
-
-Rebase  
-We are using rebase to make history more clean, clear and ordered  
-
-Duplicates the commits on the feature branch as commits on the master branch
-
-
-
-
-
+We use rebase to make history more clean, clear, and ordered. It duplicates the commits on the feature branch as commits on the master branch.

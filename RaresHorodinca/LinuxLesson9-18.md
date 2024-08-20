@@ -1,269 +1,256 @@
-Day 2
+# Day 2
 
-PS
+## PS Command
 
-PID - quite obvious, this is the process id.
-TTY - Terminal associated with the process. Here is a very detailed reading about TTY.
-TIME - total time of CPU usage
-CMD - the command which is running.
+- **PID** - Process ID.
+- **TTY** - Terminal associated with the process. (Detailed reading about TTY available.)
+- **TIME** - Total time of CPU usage.
+- **CMD** - The command that is running.
 
-arguments with or without dash
+### Arguments with or without Dash
 
-STAT. It means state of the process and it is very importnt to understand.
+- **STAT** - State of the process, very important to understand.
 
-Most people use grep with ps.
-Ps has advanced filtering.
+Most people use `grep` with `ps`.  
+`ps` has advanced filtering.
 
--f: This option stands for "full format."
--u in ps means user
+- `-f`: This option stands for "full format."  
+- `-u` in `ps` means user.
 
+### Process States
 
-D - uninterruptible sleep (usually IO)
-I - Idle kernel thread
-R - running or runnable (on run queue)
-S - interruptible sleep (waiting for an event to complete)
-T - stopped by job control signal
-t - stopped by debugger during the tracing
-X - dead (should never be seen)
-Z - defunct ("zombie") process, terminated but not reaped by its parent
-Some statuses may have the second letter. Let's list the most important
+- **D** - Uninterruptible sleep (usually IO).
+- **I** - Idle kernel thread.
+- **R** - Running or runnable (on run queue).
+- **S** - Interruptible sleep (waiting for an event to complete).
+- **T** - Stopped by job control signal.
+- **t** - Stopped by debugger during tracing.
+- **X** - Dead (should never be seen).
+- **Z** - Defunct ("zombie") process, terminated but not reaped by its parent.
 
-< - high-priority (not nice to other users)
-N - low-priority (nice to other users)
-s - is a session leader
-l - is multi-threaded
-+ - is in the foreground process group
+Some statuses may have a second letter. Important ones include:
 
-ps aux
+- **<** - High-priority (not nice to other users).
+- **N** - Low-priority (nice to other users).
+- **s** - Session leader.
+- **l** - Multi-threaded.
+- **+** - In the foreground process group.
 
-I think it is the mostly used combination. It shows the most important info, like PID, status and resources usage.
+### Common `ps` Command
 
-Lesson 10 Create Aliases
+- `ps aux` is commonly used. It shows important info like PID, status, and resource usage.
 
-ll alias for ls -al
-alias command to create one.
+## Lesson 10: Create Aliases
 
-Permanent aliases.
+- `ll` is an alias for `ls -al`.
+- Use `alias command` to create one.
 
-source is very useful in many cases. It reads and executes scripts (or should we say - content of the files, as it doesn't need to be script) in current shell
-with redirections we are able to add something to file (if file exists), or add new file. Let's use it.
+### Permanent Aliases
 
+- `source` reads and executes scripts (or content of files) in the current shell.
+- With redirections, we can add something to a file (if the file exists) or create a new file.
+
+```bash
 echo "alias lh1='ls -alh'" >> .bash_aliases
+```
 
-sudo -i Start new Session
+### User Management
 
-as we are in the root directory we can create aliases for all users
+- `sudo -i` starts a new session as root.
+- **UID** - Unique User Identifier.
+  - UID 0 is reserved for root.
+  - 1-99 are reserved for predefined accounts (like games, mail, www-data, sys, bin, etc.).
+  - 100-999 reserved for system and administrative accounts.
+  - 1000+ are reserved for users.
 
-UID is an unique User Identifier
-UID 0 is reserved for root.
-1-99 are reserved for predefined accounts (like games, mail, www-data, sys, bin and more)
-100-999 reserved for system and administrative accounts.
-1000+ are reserved for users.
+The structure of the `/etc/passwd` file:
 
-The structure of this file is as follows:
+```
+username:password:UID:GID:description:homedir:shell
+```
 
-username:password:UID:GID:description:homedir:shell.
+In the shadow file, passwords for users are hashed; if there is no password set, it shows as `*`.
 
-In the shadow file the password for the users are hashed, * nthere is no passwrod set.
-group
-The file /etc/group contains information about groups.
-id find information about curret user
+### Group Management
 
+- The file `/etc/group` contains information about groups.
+- `id` finds information about the current user.
+
+### Combining Commands
+
+```bash
 command $(another_command)
-Combining commands
+```
 
-First difference is that adduser is more verbose. We see what is happening.
+- `adduser` is more verbose and interactive, asking for user password and other information.
 
-Second, very significant difference is that adduser is interactive. It asks for password for user and other information. Provide some test data during the execution of the binary. Let's have something to compare.
+### User Creation Options
 
-become an admin:
-Let's go through most important arguments, which we should consider to use during create of new user.
+- `-d` - Create home directory in specified location.
+- `-m` - Create the home directory.
+- `-p` - Password.
+- `-s` - Provide shell.
+- `-c` - Comments or description of the account.
 
--d - create home directory in specified location, if we want to change
+### User Management Commands
 
--m - create the home directory
+- `useradd -h .` - Find what can be done as an admin.
+- `passwd` - Change passwords.
+- `usermod` - Modify the user.
 
--p - password
+### Group Management with `usermod`
 
--s - provide shell
+- `-g` - Set the primary group for the user.
+- `-G` - Add the user to one or more supplementary groups.
+- `usermod -G a` means append; good practice.
 
--c - comments, or description of the account
+To move a home directory:
 
-useradd -h .
-find what can we do as an admin
-user add
-passwd change the passwords
-usermod :modify rhe user
+```bash
+usermod testuser3 -d /home/newdir -m
+```
 
+To remove secondary groups:
 
--g: This option is used to set the primary group for the user. When you use -g, you are changing the primary group of the specified user.
-
--G: This option is used to add the user to one or more supplementary groups. The user will retain their primary group but will also be added to the specified additional groups.
- usermod -G. a means here - append. Good practice
-
-In order to properly move home directory (not just create if it doesn't exist, remember adduser without parameters?) we need to add another argument.
-
-usermod testuser3 -d /home/newdir -m put -m to add it to home.
-
-In order to remove secondary groups, we can run
-
+```bash
 usermod testuser3 -G ""
+```
 
-add two arguments:
+To add another secondary group:
 
-r - remove files
-f - force removal (in case if files don't belongs to the user).
+```bash
+usermod -aG
+```
 
-The proper arguments for usermod when I want to add another secondary group is:
+### Command History
 
-Answer
--aG
+- `history | grep cat` narrows history command.
+- `-i` allows traversing the file case-insensitively.
+- `shopt -s histappend` appends history.
+- `ls -al .bash_history` shows history file.
+- `cat .bash_history` displays the history.
+- `echo $HISTSIZE` prints the variable.
+- `set` lists all shell variables and functions defined in the shell session.
 
-history | grep cat narrowhistory command
+### Redirection
 
--i allows us to traverse the file case insensitive
- see what else we have in the configuration.
-shopt -s histappend
+- `>` (Overwrite Redirection)
+- `>>` (Append Redirection)
 
-ls -al .bash_history
+## Lab 13: `su` and `sudo`
 
-cat .bash_history in this way we see yhe history
+- `su -` substitutes user.
 
-echo $HISTSIZE
-echo HISTSIZE
-Print the variable not the string
-
-set: This command lists all the shell variables and functions currently defined in the shell session, including environment variables.
-
-A shell variable is a named storage location in a Unix-like operating system's shell that holds data, such as strings, numbers, or other values
-> .another_history redirect nothing to the file
-set
-> (Overwrite Redirection)
->> (Append Redirection)
-
-Lab 13su-ss
-su -substitute
-
-configuration of /etc/sudoers file
+### Configuration of `/etc/sudoers` File
 
 Each config line looks like this:
 
+```
 user pos1=(pos2:pos3) pos4
-
 or
-
 %group pos1=(pos2:pos3) pos4
+```
 
-We do it with sed and remove the lines with student from the /etc/sudoers file
+Remove lines with `student` from the `/etc/sudoers` file.
 
-This line in the sudoers file:
+Example line in the sudoers file:
 
-
-
+```
 student2 ALL=(ALL:ALL) NOPASSWD:ALL
+```
 
-Breakdown: 
+### Breakdown
 
-student2: User granted permissions.
+- `student2`: User granted permissions.
+- `ALL`: Can run commands from any host.
+- `(ALL:ALL)`: Can execute commands as any user and group.
+- `NOPASSWD`: No password required for sudo commands.
+- `ALL`: Can run any command.
 
-ALL: Can run commands from any host.
-  
-(ALL:ALL): Can execute commands as any user and group.
+## Lab 14: Logs
 
-NOPASSWD:: No password required for sudo commands.
+### Log Files Overview
 
-ALL: Can run any command.  
+- `syslog`: General system/application log.
+- `auth.log`: Authorization and login attempts.
+- `dmesg`: Kernel messages and boot/runtime info.
+- `kern.log`: Kernel messages.
+- `boot.log`: System startup sequence.
+- `lastlog`: Last login records.
+- `faillog`: Failed login attempts.
+- `wtmp.log`: Login information for utilities.
+- `dpkg.log`: Package management activities.
 
-NONE: Will get me in trouble for not locking my computer
-:))))))   
+### Logger Command
 
+```bash
+logger "This is a test message"
+```
 
-LAB 14:Logs
+### Working with Binary Files from Systemd
 
-Log Files Overview:  
-syslog: General system/application log.  
-auth.log: Authorization and login attempts.  
-dmesg: Kernel messages and boot/runtime info.  
-kern.log: Kernel messages.  
-boot.log: System startup sequence.  
-lastlog: Last login records.  
-faillog: Failed login attempts.  
-wtmp.log: Login information for utilities.  
-dpkg.log: Package management activities.  
+- `journalctl`: View logs.
+- `journalctl --since "$(date '+%Y-%m-%d %H:%M:%S' --date='5 minutes ago')"`: Log entries from a specific time.
 
-Logger command adds a line to the logs
-logger "This is a test message"  
+## Lesson 15: Streams
 
-Let's learn how to work with binary files from systemd.
+- Three streams: stdin, stdout, stderr.
+- `cat notexists.txt 2> errorfile`: Write errors into a log.
+- `2` is used to redirect to stderr.
 
-journalctl 
+### Capturing STDOUT and STDERR
 
-journalctl --since "$(date '+%Y-%m-%d %H:%M:%S' --date='5 minutes ago')" log entries from specific time  
+```bash
+cat notexists.txt > capture.txt 2>&1
+```
 
-Lesson 15 Streams
+- `2>&1` means both streams go to the same destination.
 
-3 streams - stdin stdout sterror
+### Creating Special Files
 
-cat notexists.txt 2> errorfile: Write errors into a log 
-2 used to redirect to stderr
+```bash
+mknod -m 0666 /dev/null c 1 3
+```
 
-We can capture STDOUT and STDERR in the same file.  
+- `mknod` creates a special file.
+- `-m 0666` sets file permissions.
+- `/dev/null` is the name.
+- `c` is the device type.
+- `1 3` are the MAJOR and MINOR numbers to specify the device.
 
-cat notexists.txt > capture.txt 2>&1  
+## Lesson 16: CronTab
 
-2>&1 same destination for both streams  
+- **Cron** is a service responsible for control and execution of scheduled tasks.
+- **Crontab** is a list of tasks or commands scheduled to be executed at specific dates and times.
 
-mknod -m 0666 /dev/null c 1 3  
+### Setting Crontab
 
-mknod creates a speacial file  
--m 0666 says about file permission  
-/dev/null is the name  
-c is the device type  
-1 3 are the MAJOR and MINOR numbers to specify the device  
+```bash
+crontab -e
+```
 
-Lesson 16:CRonTAb 
+Example entry:
 
-cron is a service responsible for control and execution of scheduled tasks.  
-cron is a service which controls multiple crontabs.  
-crontab is simply a list of tasks or commands which are scheduled to be executed on specific date and time  
-So, if we set 15 * as two first elements, it means: execute 15 minutes after every hour.  
-Setting Crontab:  
-crontab -e opens crontab editor  
-12 9 23 * * /usr/bin/ls -al > logfile 2>&1 in vim  
+```
+12 9 23 * * /usr/bin/ls -al > logfile 2>&1
+```
 
-Lesson 17: Know your files!  
+## Lesson 17: Know Your Files
 
-/dev/vda: Entire virtual disk.  
-/dev/vda1: First partition on that disk.  
+- `/dev/vda`: Entire virtual disk.
+- `/dev/vda1`: First partition on that disk.
 
-stat allows us to get diffeerent type of information than file.  
+### Using `stat`
 
-What stat gives  
-File - it is obvious, this is the name of our file.  
-Size - the size of thee file in bytes.  
-Blocks - the size of the file, but in blocks.  
-IO Block - size of the each blocks.  
-   
+- `stat` allows us to get different types of information about a file.
+- **What `stat` Gives**:
+  - **File** - Name of the file.
+  - **Size** - Size of the file in bytes.
+  - **Blocks** - Size of the file in blocks.
+  - **IO Block** - Size of each block.
+
+```bash
 stat -f mybashscript.sh
+```
 
--f gives us information about filesystem.  
-
-stat --printf="File %n is %s bytes, and is a %F\n" mybashscript.sh seems useful 
-
-Lesson 18: Soft and hard links  
-
-- ln sintax for links
-
-ln SOURCE TARGET : Hard Link.
-ln -s SOURCE TARGET : Soft Link.
-
-Inodes 
-ls -il ../source/file1  
-ls -il  
-
-stat ../source/file1 counts hard links
-
-unlink LINK  
-
-
-
+- `-f` gives information about the filesystem.

@@ -1,81 +1,140 @@
+# Docker Commands and Lessons
 
-docker build -t cmd-echo .  
+## Building and Inspecting Docker Images
 
-Explore CMD of cmd-echo :  
+```bash
+docker build -t cmd-echo .
+```
 
-docker inspect cmd-echo | jq .[0].ContainerConfig.Cmd  
+### Explore CMD of `cmd-echo`
 
-Run the container with default values:  
+```bash
+docker inspect cmd-echo | jq .[0].ContainerConfig.Cmd
+```
 
-docker run --rm cmd-echo  
+### Run the Container with Default Values
 
-Run the container with updated CMD command:  
+```bash
+docker run --rm cmd-echo
+```
 
-docker run --rm cmd-echo date  
+### Run the Container with Updated CMD Command
 
-Lesson 4  Docker file best practices 
+```bash
+docker run --rm cmd-echo date
+```
 
-cat > /root/Dockerfile <<EOF  
-FROM alpine  
-ENTRYPOINT ["echo", "hi, from container!"]  
-EOF  
+## Lesson 4: Dockerfile Best Practices
 
+```bash
+cat > /root/Dockerfile <<EOF
+FROM alpine
+ENTRYPOINT ["echo", "hi, from container!"]
+EOF
+```
+
+### Example Dockerfile for Go Application
+
+```dockerfile
 # syntax=docker/dockerfile:1
-FROM golang:1.21-alpine 
+FROM golang:1.21-alpine
 WORKDIR /src # cached
-COPY go.mod go.sum /src/  
-RUN go mod download 
+COPY go.mod go.sum /src/
+RUN go mod download
 COPY . .
 RUN go build -o /bin/client ./cmd/client
 RUN go build -o /bin/server ./cmd/server
 ENTRYPOINT [ "/bin/server" ]
+```
 
-MultiStage Builds  
-With multi-stage builds:  
-- you can run builds in parallel  
-- you can separate build files from binaries  
+### Multi-Stage Builds
 
-docker build --build-arg="GO_VERSION=1.22" .  build with a specific version
+With multi-stage builds:
+- You can run builds in parallel.
+- You can separate build files from binaries.
 
-Lesson 5 Docker : Network drivers  
+```bash
+docker build --build-arg="GO_VERSION=1.22" .
+```
 
-docker network create --driver bridge bridge-network  
-create a network  
+## Lesson 5: Docker Network Drivers
 
+### Create a Network
+
+```bash
+docker network create --driver bridge bridge-network
+```
+
+### Connect Containers to the Network
+
+```bash
 docker network connect bridge-network app-1 \
 && \
-docker network connect bridge-network app-2  use disconnect for the oppsite
+docker network connect bridge-network app-2
+```
 
-docker run -d -v /root/app-1:/usr/share/nginx/html --name app-1 --network host nginx:alpine  
-mount container on the specified directory and add it to the hist network, uuse nginx/:alpine image 
+- Use `disconnect` for the opposite.
 
-curl localhost:80  get request  
+### Run a Container with Volume Mounting
 
-Lesson 6 PArt-forwarding in docker  
+```bash
+docker run -d -v /root/app-1:/usr/share/nginx/html --name app-1 --network host nginx:alpine
+```
 
-Connect via SSH to the host named node01 .  
-ssh node01  
+- Mounts the container on the specified directory and adds it to the host network using the `nginx:alpine` image.
 
-Lesson 7 
+### Test with Curl
 
--d is for detached mode
+```bash
+curl localhost:80
+```
 
-Lesson 8 Mount and bind  
+## Lesson 6: Port Forwarding in Docker
 
+### Connect via SSH to the Host Named `node01`
 
-docker exec sample-app sh -c "ls /usr/share/nginx/html" list contents in the dirctory using diocker  
+```bash
+ssh node01
+```
 
-sed -i '3d' file.txt  remove a line from the file  
+## Lesson 7
 
-Lesson 9 Using environment Vraiables  
+- `-d` is for detached mode.
 
-with env and -e in the commands  
+## Lesson 8: Mount and Bind
 
-Lesson 10 volume mounts 
+### List Contents in the Directory Using Docker
 
-docker volume inspect sample-volume verify the volume  
-docker run -d -p 80:80 -v sample-volume:/usr/share/nginx/html --name sample-app nginx:alpine  
-the way to attach volume 
+```bash
+docker exec sample-app sh -c "ls /usr/share/nginx/html"
+```
 
-/var/lib/docker/volumes/sample-volume/_data/index.html  
-Where the volume is lnked  
+### Remove a Line from a File
+
+```bash
+sed -i '3d' file.txt
+```
+
+## Lesson 9: Using Environment Variables
+
+- Use `env` and `-e` in the commands.
+
+## Lesson 10: Volume Mounts
+
+### Verify the Volume
+
+```bash
+docker volume inspect sample-volume
+```
+
+### Run a Container with Volume Mounting
+
+```bash
+docker run -d -p 80:80 -v sample-volume:/usr/share/nginx/html --name sample-app nginx:alpine
+```
+
+### Where the Volume is Linked
+
+```
+/var/lib/docker/volumes/sample-volume/_data/index.html
+```
