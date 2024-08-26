@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tennis-registration-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tennis-registration
+  template:
+    metadata:
+      labels:
+        app: tennis-registration
+    spec:
+      containers:
+      - name: tennis-registration
+        image: rhoro02/tennis-tournament-bun
+        ports:
+        - containerPort: 8082
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:mysql://mysql-service:3306/sd_a1_final"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "root"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "1234"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tennis-registration-service
+spec:
+  selector:
+    app: tennis-registration
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8082
+  type: LoadBalancer

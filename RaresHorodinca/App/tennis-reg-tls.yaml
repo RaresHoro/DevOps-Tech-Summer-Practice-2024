@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tennis-reg-tls
+  namespace: default
+spec:
+  secretName: tennis-reg-tls
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  commonName: 35.195.89.184.nip.io
+  dnsNames:
+  - 35.195.89.184.nip.io

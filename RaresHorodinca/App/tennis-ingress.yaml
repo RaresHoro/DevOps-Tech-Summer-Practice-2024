@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tennis-app-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  rules:
+  - host: 35.195.89.184.nip.io
+    http:
+      paths:
+      - path: /.well-known/acme-challenge/
+        pathType: ImplementationSpecific  # or Exact, if supported
+        backend:
+          service:
+            name: cm-acme-http-solver-xgtnh
+            port:
+              number: 8089
+  tls:
+  - hosts:
+    - 35.195.89.184.nip.io
+    secretName: tennis-reg-tls

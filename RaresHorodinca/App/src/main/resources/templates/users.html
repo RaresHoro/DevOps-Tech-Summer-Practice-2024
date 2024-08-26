@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration and Login System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Registration and Login System</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/register}">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/logout}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="row mt-3">
+        <h1>Registered Users</h1>
+    </div>
+    <div class="row">
+        <table class="table table-striped">
+            <thead class="table-dark">
+            <tr>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Iterate over users and display their information -->
+            <tr th:each="user: ${users}">
+                <td th:text="${user.firstName}"></td>
+                <td th:text="${user.lastName}"></td>
+                <td th:text="${user.email}"></td>
+                <td>
+                    <!-- Delete user button -->
+                    <button type="button" class="btn btn-danger delete-btn">Delete</button>
+                    <!-- Edit user button -->
+                    <button type="button" class="btn btn-primary edit-btn">Edit</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Edit User Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Edit user form -->
+                <form>
+                    <div class="mb-3">
+                        <label for="editFirstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="editFirstName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editLastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="editLastName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="editEmail" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Delete and Edit actions -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Add click event listener to delete buttons
+    document.querySelectorAll('.delete-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            if (confirm('Are you sure you want to delete this user?')) {
+                // Find the closest <tr> element and remove it from the DOM
+                var row = this.closest('tr');
+                row.remove();
+            }
+        });
+    });
+
+    // Add click event listener to edit buttons
+    document.querySelectorAll('.edit-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            // Find the closest <tr> element
+            var row = this.closest('tr');
+
+            // Add a class to mark the row as being edited
+            row.classList.add('editing');
+
+            // Get the user's information from the row
+            var firstName = row.querySelector('td:nth-child(1)').textContent;
+            var lastName = row.querySelector('td:nth-child(2)').textContent;
+            var email = row.querySelector('td:nth-child(3)').textContent;
+
+            // Populate the edit form fields with user data
+            document.getElementById('editFirstName').value = firstName;
+            document.getElementById('editLastName').value = lastName;
+            document.getElementById('editEmail').value = email;
+
+            // Show the edit modal
+            var editModal = new bootstrap.Modal(document.getElementById('editModal'));
+            editModal.show();
+        });
+    });
+
+    // Add click event listener to Save Changes button
+    document.getElementById('saveChangesBtn').addEventListener('click', function() {
+        // Get the updated values from the edit form
+        var editedFirstName = document.getElementById('editFirstName').value;
+        var editedLastName = document.getElementById('editLastName').value;
+        var editedEmail = document.getElementById('editEmail').value;
+
+        // Find the row containing the edited user
+        var row = document.querySelector('tr.editing');
+
+        // Update the user's information in the table
+        row.querySelector('td:nth-child(1)').textContent = editedFirstName;
+        row.querySelector('td:nth-child(2)').textContent = editedLastName;
+        row.querySelector('td:nth-child(3)').textContent = editedEmail;
+
+        // Hide the edit modal
+        var editModal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
+        editModal.hide();
+    });
+
+    // Add hidden.bs.modal event listener to remove 'editing' class when modal is closed
+    var editModal = document.getElementById('editModal');
+    editModal.addEventListener('hidden.bs.modal', function () {
+        document.querySelector('tr.editing').classList.remove('editing');
+    });
+</script>
+
+</body>
+</html>
