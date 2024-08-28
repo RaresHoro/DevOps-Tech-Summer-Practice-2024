@@ -1,0 +1,84 @@
+# Useful Links
+
+## Certification Resources
+- [HashiCorp Terraform Associate Study Guide](https://developer.hashicorp.com/terraform/tutorials/certification-003/associate-study-003)
+- [Google Cloud Certification](https://cloud.google.com/learn/certification?hl=en#why-get-google-cloud-certified)
+- [AWS Certified Cloud Practitioner](https://aws.amazon.com/certification/certified-cloud-practitioner/)
+- [Azure Fundamentals Certification](https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/?practice-assessment-type=certification)
+
+## YouTube Channels
+- [DevOps Toolkit](https://www.youtube.com/@DevOpsToolkit)
+- [Wiggity Whitney](https://www.youtube.com/@wiggitywhitney)
+
+## YouTube Videos
+- [Video on Linux Kernel](https://www.youtube.com/watch?v=SqOtNXwZzDQ)
+- [Another Video on Linux](https://www.youtube.com/watch?v=j_UUnlVC2Ss)
+
+## Linux Resources
+- [Linux Kernel Map](https://makelinux.github.io/kernel/map/)
+- [Linux Kernel Architecture](https://www.scaler.com/topics/linux-kernel-architecture/)
+- [Linux Network Namespace and Use Cases](https://ramesh-sahoo.medium.com/linux-network-namespace-and-five-use-cases-using-various-methods-f45b1ec5db8f)
+
+## Cloud Native Computing Foundation (CNCF)
+- [CNCF Official Site](https://www.cncf.io/)
+- [CNCF Landscape](https://landscape.cncf.io/)
+- [CNCF Trailmap on GitHub](https://github.com/cncf/trailmap)
+
+## LinkedIn Groups and Pages
+- [LinkedIn Group](https://www.linkedin.com/groups/6585254/)
+- [LearnK8s Posts](https://www.linkedin.com/company/learnk8s/posts/?feedView=all)
+- [K3s Daily Showcase](https://www.linkedin.com/showcase/k3sdaily/)
+- [LearnK8s Posts](https://www.linkedin.com/company/learnk8s/posts/)
+- [HashiCorp Terraform on LinkedIn](https://www.linkedin.com/products/hashicorp-terraform/)
+- [DevOpsCube on LinkedIn](https://www.linkedin.com/company/devopscube/)
+
+# Final Steps to a Secure ACME
+
+I did the part for the certificate, I bought a domain name and now I am waiting for Google to generate the DNS.
+
+## Notes from Bogdan about this:
+
+To expose your Kubernetes ingress object to the internet using your domain, you'll need to follow these steps:
+
+1. **Set up DNS records:**
+   - Log in to your domain provider's DNS management console.
+   - Create an A record pointing your domain (or subdomain) to the external IP address of your ingress controller.
+   - If you're using Google Cloud Load Balancer (which is typical with GKE), you might need to create a CNAME record instead, pointing to the Load Balancer's DNS name.
+
+2. **Configure your ingress resource:**
+   - Update your ingress resource to include the hostname (your domain) in the rules section.
+   - Example:
+     ```yaml
+     apiVersion: networking.k8s.io/v1
+     kind: Ingress
+     metadata:
+       name: my-ingress
+     spec:
+       rules:
+       - host: yourdomain.com
+         http:
+           paths:
+           - path: /
+             pathType: Prefix
+             backend:
+               service:
+                 name: your-service
+                 port: 
+                   number: 80
+     ```
+
+3. **SSL/TLS configuration (recommended):**
+   - If you want to secure your connection with HTTPS (which is highly recommended), you'll need to set up SSL/TLS.
+   - You can do this manually by adding a TLS section to your ingress resource and creating a Kubernetes secret with your SSL certificate and key.
+   - Alternatively, you can use cert-manager to automatically provision and manage SSL certificates from Let's Encrypt.
+
+4. **Verify your ingress controller:**
+   - Ensure your ingress controller (like NGINX Ingress Controller or Google Cloud Load Balancer) is properly set up and running in your cluster.
+
+5. **Check firewall rules:**
+   - Make sure your GCP firewall rules allow incoming traffic on ports 80 (HTTP) and 443 (HTTPS) to your ingress controller.
+
+6. **Test and troubleshoot:**
+   - After applying these changes, wait for DNS propagation (can take up to 48 hours, but often much faster).
+   - Test accessing your service through your domain.
+   - If you encounter issues, check your ingress controller logs and events on the ingress resource for troubleshooting.
